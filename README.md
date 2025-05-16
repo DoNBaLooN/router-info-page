@@ -14,4 +14,5 @@
 На роутере выполните команду:
 
 ```sh
-sh <(wget -O - https://raw.githubusercontent.com/DoNBaLooN/router-info-page/main/install.sh) | sh
+wget -O - https://raw.githubusercontent.com/DoNBaLooN/router-info-page/main/install.sh | sh
+
