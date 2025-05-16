@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VlessWB — Статус сети</title>
+  <style>
+    body {
+      background: #1e1e2f;
+      color: #cfd8dc;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+    .container {
+      background: #2c2c45;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+      padding: 2rem 3rem;
+      max-width: 400px;
+      width: 100%;
+    }
+    h1 {
+      margin-top: 0;
+      font-weight: 700;
+      color: #4fc3f7;
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+      letter-spacing: 0.1em;
+    }
+    .item {
+      margin-bottom: 1.2rem;
+      font-size: 1.1rem;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #394a5a;
+      padding-bottom: 0.5rem;
+    }
+    .label {
+      font-weight: 600;
+      color: #90caf9;
+    }
+    .value {
+      font-family: monospace;
+      color: #e3f2fd;
+    }
+    .blink {
+      animation: blink-animation 1s steps(2, start) infinite;
+      color: #ff5252;
+      font-weight: 700;
+    }
+    @keyframes blink-animation {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    footer {
+      margin-top: 2rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #62727b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>VlessWB</h1>
+    <div class="item">
+      <div class="label">WAN IP:</div>
+      <div class="value" id="wan">Загрузка...</div>
+    </div>
+    <div class="item">
+      <div class="label">IP ZeroTier:</div>
+      <div class="value" id="zt">Загрузка...</div>
+    </div>
+    <div class="item">
+      <div class="label">Тип DNS:</div>
+      <div class="value" id="dns_type">Загрузка...</div>
+    </div>
+    <div class="item">
+      <div class="label">DNS сервер:</div>
+      <div class="value" id="dns_server">Загрузка...</div>
+    </div>
+    <div class="item">
+      <div class="label">Статус DNS:</div>
+      <div class="value" id="dns_status">Загрузка...</div>
+    </div>
+    <div class="item">
+      <div class="label">Локальный DNS:</div>
+      <div class="value" id="local_dns">Загрузка...</div>
+    </div>
+    <footer>
+      Страница обновляется автоматически
+    </footer>
+  </div>
+
+  <script>
+    async function fetchData() {
+      try {
+        const response = await fetch('/wanip.sh');
+        const text = await response.text();
+        const lines = text.split('\n');
+
+        let dnsStatus = "";
+
+        lines.forEach(line => {
+          if (line.startsWith("WAN IP: ")) {
+            document.getElementById('wan').textContent = line.replace("WAN IP: ", "").trim();
+          } else if (line.startsWith("ZT IP: ")) {
+            document.getElementById('zt').textContent = line.replace("ZT IP: ", "").trim();
+          } else if (line.startsWith("DNS Type: ")) {
+            document.getElementById('dns_type').textContent = line.replace("DNS Type: ", "").trim();
+          } else if (line.startsWith("DNS Server: ")) {
+            document.getElementById('dns_server').textContent = line.replace("DNS Server: ", "").trim();
+          } else if (line.startsWith("DNS Status: ")) {
+            dnsStatus = line.replace("DNS Status: ", "").trim();
+            const dnsStatusElem = document.getElementById('dns_status');
+
+            if (dnsStatus.toLowerCase() === "unavailable") {
+              dnsStatusElem.innerHTML = '<span class="blink">Обратитесь в поддержку</span>';
+            } else {
+              dnsStatusElem.textContent = dnsStatus;
+            }
+          } else if (line.startsWith("Local DNS: ")) {
+            document.getElementById('local_dns').textContent = line.replace("Local DNS: ", "").trim();
+          }
+        });
+      } catch (e) {
+        console.error("Ошибка загрузки данных:", e);
+      }
+    }
+
+    fetchData();
+    setInterval(fetchData, 30000);
+  </script>
+</body>
+</html>
