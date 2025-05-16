@@ -54,6 +54,10 @@
       color: #ff5252;
       font-weight: 700;
     }
+    .blink:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
     @keyframes blink-animation {
       0%, 100% { opacity: 1; }
       50% { opacity: 0; }
@@ -63,6 +67,12 @@
       text-align: center;
       font-size: 0.9rem;
       color: #62727b;
+    }
+    .note {
+      margin-top: 1rem;
+      text-align: center;
+      color: #ffa726;
+      font-size: 0.95rem;
     }
   </style>
 </head>
@@ -74,7 +84,7 @@
       <div class="value" id="wan">Загрузка...</div>
     </div>
     <div class="item">
-      <div class="label">IP ZeroTier:</div>
+      <div class="label">IP ZT:</div>
       <div class="value" id="zt">Загрузка...</div>
     </div>
     <div class="item">
@@ -96,46 +106,81 @@
     <footer>
       Страница обновляется автоматически
     </footer>
+    <div class="note">
+      Если красных ошибок нет, а интернет не работает — Сделайте скриншот этой страницы и пришлите в поддержку.
+    </div>
   </div>
 
   <script>
-    async function fetchData() {
-      try {
-        const response = await fetch('/wanip.sh');
-        const text = await response.text();
-        const lines = text.split('\n');
+  async function fetchData() {
+    try {
+      const response = await fetch('/wanip.sh');
+      const text = await response.text();
+      const lines = text.split('\n');
 
-        let dnsStatus = "";
+      let wanIp = "";
+      let dnsStatus = "";
 
-        lines.forEach(line => {
-          if (line.startsWith("WAN IP: ")) {
-            document.getElementById('wan').textContent = line.replace("WAN IP: ", "").trim();
-          } else if (line.startsWith("ZT IP: ")) {
-            document.getElementById('zt').textContent = line.replace("ZT IP: ", "").trim();
-          } else if (line.startsWith("DNS Type: ")) {
-            document.getElementById('dns_type').textContent = line.replace("DNS Type: ", "").trim();
-          } else if (line.startsWith("DNS Server: ")) {
-            document.getElementById('dns_server').textContent = line.replace("DNS Server: ", "").trim();
-          } else if (line.startsWith("DNS Status: ")) {
-            dnsStatus = line.replace("DNS Status: ", "").trim();
-            const dnsStatusElem = document.getElementById('dns_status');
+      lines.forEach(line => {
+        if (line.startsWith("WAN IP: ")) {
+          wanIp = line.replace("WAN IP: ", "").trim();
+        } else if (line.startsWith("ZT IP: ")) {
+          document.getElementById('zt').textContent = line.replace("ZT IP: ", "").trim();
+        } else if (line.startsWith("DNS Type: ")) {
+          document.getElementById('dns_type').textContent = line.replace("DNS Type: ", "").trim();
+        } else if (line.startsWith("DNS Server: ")) {
+          document.getElementById('dns_server').textContent = line.replace("DNS Server: ", "").trim();
+        } else if (line.startsWith("DNS Status: ")) {
+          dnsStatus = line.replace("DNS Status: ", "").trim();
+        } else if (line.startsWith("Local DNS: ")) {
+          document.getElementById('local_dns').textContent = line.replace("Local DNS: ", "").trim();
+        }
+      });
 
-            if (dnsStatus.toLowerCase() === "unavailable") {
-              dnsStatusElem.innerHTML = '<span class="blink">Обратитесь в поддержку</span>';
-            } else {
-              dnsStatusElem.textContent = dnsStatus;
-            }
-          } else if (line.startsWith("Local DNS: ")) {
-            document.getElementById('local_dns').textContent = line.replace("Local DNS: ", "").trim();
-          }
-        });
-      } catch (e) {
-        console.error("Ошибка загрузки данных:", e);
+      const wanElem = document.getElementById('wan');
+      const dnsStatusElem = document.getElementById('dns_status');
+
+      if (!wanIp) {
+        wanElem.innerHTML = '<span class="blink">Вставьте правильно кабель в первый порт от разъёма питания</span>';
+        dnsStatusElem.textContent = dnsStatus;
+      } else {
+        wanElem.textContent = wanIp;
+        if (dnsStatus.toLowerCase() === "unavailable") {
+          dnsStatusElem.innerHTML = `<span class="blink" id="dns_reset_btn" onclick="resetDNS()" title="Кликните для сброса DNS">Нажмите для сброса DNS</span>`;
+        } else {
+          dnsStatusElem.textContent = dnsStatus;
+        }
       }
+    } catch (e) {
+      console.error("Ошибка загрузки данных:", e);
+      document.getElementById('wan').innerHTML = '<span class="blink">Вставьте правильно кабель в первый порт от разъёма питания</span>';
+      document.getElementById('dns_status').textContent = 'Ошибка загрузки данных';
     }
+  }
 
-    fetchData();
-    setInterval(fetchData, 30000);
-  </script>
+  function resetDNS() {
+    const btn = document.getElementById('dns_reset_btn');
+    if (!btn) return;
+
+    btn.onclick = null;
+    btn.classList.remove('blink');
+    btn.style.color = '#ffab40';
+    btn.textContent = 'Программа перезапускается, ждите...';
+
+    fetch('/reset_dns.sh')
+      .then(resp => resp.text())
+      .then(text => {
+        btn.textContent = 'DNS сброшен';
+        setTimeout(fetchData, 2000);
+      })
+      .catch(() => {
+        btn.textContent = 'Ошибка при сбросе';
+        btn.style.color = '#ff5252';
+      });
+  }
+
+  fetchData();
+  setInterval(fetchData, 30000);
+</script>
 </body>
 </html>
