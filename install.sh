@@ -6,7 +6,6 @@ WWW_DIR="/www"
 # Создаём необходимые каталоги
 echo "Создаём каталоги $WWW_DIR/country и $WWW_DIR/cgi-bin..."
 mkdir -p "$WWW_DIR/country"
-mkdir -p "$WWW_DIR/cgi-bin"
 
 # Загружаем основные файлы в WWW_DIR
 echo "Загружаем файлы в $WWW_DIR..."
