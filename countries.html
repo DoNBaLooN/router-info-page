@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Доступные VPN-локации</title>
+  <style>
+    :root {
+      --bg-body: #1f1f2e;
+      --bg-card: #2d2d46;
+      --color-text: #e0e7ea;
+      --color-primary: #42a5f5;
+      --color-secondary: #90caf9;
+      --color-accent: #fbc02d;
+      --color-link: #64b5f6;
+      --radius: 8px;
+      --transition: 0.3s;
+      --font-base: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-body);
+      color: var(--color-text);
+      font-family: var(--font-base);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    .container {
+      background: var(--bg-card);
+      border-radius: calc(var(--radius) * 1.5);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+      width: 100%;
+      max-width: 450px;
+      overflow: hidden;
+    }
+    .header { background: var(--color-primary); padding: 1.5rem; text-align: center; }
+    .header h1 { color: #fff; font-size: 1.8rem; letter-spacing: 0.05em; text-transform: uppercase; }
+    .section { padding: 1.5rem; border-bottom: 1px solid #394a5a; }
+    .section:last-of-type { border-bottom: none; }
+    .section h2 { font-size: 1.2rem; color: var(--color-primary); margin-bottom: 0.75rem; }
+    .card-list { display: grid; gap: 0.75rem; }
+    .card {
+      background: #394a5a;
+      border-radius: var(--radius);
+      padding: 0.8rem 1rem;
+      display: flex;
+      align-items: center;
+      transition: background var(--transition), transform var(--transition);
+    }
+    .card:hover { background: #4c4c6a; transform: translateY(-2px); }
+    .card .label { font-weight: 600; color: var(--color-secondary); flex: 1; }
+    .card .value { font-size: 1rem; text-align: right; color: var(--color-text); flex: 1; }
+    .note { text-align: center; padding: 1rem; font-size: 0.9rem; color: var(--color-text); }
+    .note a { color: var(--color-link); text-decoration: none; font-weight: 600; }
+    .note a:hover { text-decoration: underline; }
+    .button {
+      display: block;
+      text-align: center;
+      margin: 1.5rem;
+      padding: 0.8rem;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      text-decoration: none;
+      font-weight: 600;
+      transition: background var(--transition);
+    }
+    .button:hover { background: #64b5f6; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Доступные VPN-локации</h1>
+    </div>
+    <div class="section">
+      <h2>Стандартный тариф</h2>
+      <div class="card-list">
+        <div class="card">
+          <div class="label">Локация:</div>
+          <div class="value">&#x1F1F8;&#x1F1EA; Швеция</div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <h2>Премиум (Доп. страны)</h2>
+      <p style="font-size:0.95rem; color: var(--color-text); margin-bottom:0.5rem;">Цена: 1 360 ₽/12 мес или 369 ₽/3 мес</p>
+      <div class="card-list">
+        <div class="card"><div class="label">&#x1F1F9;&#x1F1F7; Турция</div></div>
+        <div class="card"><div class="label">&#x1F1FA;&#x1F1F8; США</div></div>
+        <div class="card"><div class="label">&#x1F1F1;&#x1F1FB; Латвия</div></div>
+        <div class="card"><div class="label">&#x1F1F3;&#x1F1F1; Нидерланды</div></div>
+        <div class="card"><div class="label">&#x1F1E9;&#x1F1EA; Германия</div></div>
+        <div class="card"><div class="label">&#x1F1E6;&#x1F1EA; ОАЭ</div></div>
+        <div class="card"><div class="label">&#x1F1EC;&#x1F1E7; Великобритания</div></div>
+      </div>
+    </div>
+    <a href="ip.html" class="button">← Вернуться назад</a>
+    <div class="note">Для покупки обратитесь в поддержку по ссылке <a href="https://t.me/VlessWi" target="_blank">https://t.me/VlessWi</a></div>
+  </div>
+</body>
+</html>
