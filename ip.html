@@ -248,6 +248,7 @@
     let wanIp = "";
     let dnsStatus = "";
     let vpnStatus = "";
+    let localDnsStatus = "";
 
 const countryEl = document.getElementById('current_country');
       countryEl.textContent = '';
@@ -266,7 +267,7 @@ const countryEl = document.getElementById('current_country');
       } else if (line.startsWith("DNS Status: ")) {
         dnsStatus = line.replace("DNS Status: ", "").trim();
       } else if (line.startsWith("Local DNS: ")) {
-        document.getElementById('local_dns').textContent = line.replace("Local DNS: ", "").trim();
+        localDnsStatus = line.replace("Local DNS: ", "").trim();
       }else if (line.startsWith("Country: ")) {
           countryEl.textContent = line.replace("Country: ", "").trim();
         }
@@ -287,6 +288,18 @@ const countryEl = document.getElementById('current_country');
     } else {
       dnsStatusElem.textContent = dnsStatus;
     }
+    
+    const localDnsElem = document.getElementById('local_dns');
+      if (localDnsStatus.toLowerCase() === "unavailable") {
+        localDnsElem.innerHTML =
+          `<span class="blink" id="dns_reset_btn"
+                  onclick="resetDNS()"
+                  title="Кликните для сброса DNS">
+             Ошибка DNS, нажмите для рестарта
+           </span>`;
+      } else {
+        localDnsElem.textContent = localDnsStatus;
+      }
 
     // VPN Status
     const vpnElem = document.getElementById('vpn_status');
